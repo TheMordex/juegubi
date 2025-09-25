@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class ControladorCamarasMenu : MonoBehaviour
@@ -8,21 +6,41 @@ public class ControladorCamarasMenu : MonoBehaviour
     public Camera camera1;
     public Camera camera2;
 
-    private bool isCamera1Active = true;
+    [Header("Canvases")]
+    public Canvas canvas1;
+    public Canvas canvas2;
     
-    void SwitchCamera()
+    private bool _isCamera1Active = true;
+
+    private void Start()
     {
-         if (isCamera1Active) 
-         {
+        camera1.gameObject.SetActive(true);
+        camera2.gameObject.SetActive(false);
+        _isCamera1Active = true;
+        
+        canvas1.gameObject.SetActive(true);
+        canvas2.gameObject.SetActive(false);
+    }
+    public void SwitchCamera()
+    {
+        if (_isCamera1Active)
+        {
             camera1.gameObject.SetActive(false);
             camera2.gameObject.SetActive(true);
-         }
-         else
-         {
+            
+            canvas1.gameObject.SetActive(false);
+            canvas2.gameObject.SetActive(true);
+        }
+        else
+        {
             camera1.gameObject.SetActive(true);
             camera2.gameObject.SetActive(false);
-         }
-         isCamera1Active = !isCamera1Active;
+            
+            canvas1.gameObject.SetActive(true);
+            canvas2.gameObject.SetActive(false);
+        }
+
+        _isCamera1Active = !_isCamera1Active;
     }
 }
 
