@@ -1,0 +1,56 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 469c24fdb3bd6431b92cc1465bd9166b, type: 3}
+  m_Name: RemoteConfigDataStoreAsset
+  m_EditorClassIdentifier: 
+  _rsKeyList: "[\r\n  {\r\n    \"metadata\": {\r\n      \"entityId\": \"dfe3fb9b-3412-466a-a0c8-267453ab1539\"\r\n   
+    },\r\n    \"rs\": {\r\n      \"key\": \"enemyDamage\",\r\n      \"type\": \"int\",\r\n     
+    \"value\": 5\r\n    }\r\n  },\r\n  {\r\n    \"metadata\": {\r\n      \"entityId\":
+    \"4b815e26-8512-4eb0-8422-aae9ad3296ab\"\r\n    },\r\n    \"rs\": {\r\n     
+    \"key\": \"isDoubleXP\",\r\n      \"type\": \"bool\",\r\n      \"value\": false\r\n   
+    }\r\n  },\r\n  {\r\n    \"metadata\": {\r\n      \"entityId\": \"eccd0a40-6dbe-4277-b3ae-4738bb61fd44\"\r\n   
+    },\r\n    \"rs\": {\r\n      \"key\": \"backgroundMusicVolume\",\r\n      \"type\":
+    \"float\",\r\n      \"value\": 1.0\r\n    }\r\n  },\r\n  {\r\n    \"metadata\":
+    {\r\n      \"entityId\": \"ffa0bdab-9a9e-481d-b717-95b4a3491a95\"\r\n    },\r\n   
+    \"rs\": {\r\n      \"key\": \"victoryMessage\",\r\n      \"type\": \"string\",\r\n     
+    \"value\": \"\xA1Victoria!\"\r\n    }\r\n  },\r\n  {\r\n    \"metadata\": {\r\n     
+    \"entityId\": \"c0eda633-0636-4203-9a45-45f0489bafd5\"\r\n    },\r\n    \"rs\":
+    {\r\n      \"key\": \"maxPlayerHealth\",\r\n      \"type\": \"int\",\r\n     
+    \"value\": 150\r\n    }\r\n  },\r\n  {\r\n    \"metadata\": {\r\n      \"entityId\":
+    \"057b715c-5113-425f-8557-bf84dc0fd939\"\r\n    },\r\n    \"rs\": {\r\n     
+    \"key\": \"goldPerWin\",\r\n      \"type\": \"int\",\r\n      \"value\": 50\r\n   
+    }\r\n  },\r\n  {\r\n    \"metadata\": {\r\n      \"entityId\": \"c9054298-4a95-41f6-8bc4-e26f2d1314d1\"\r\n   
+    },\r\n    \"rs\": {\r\n      \"key\": \"gemsPerWin\",\r\n      \"type\": \"int\",\r\n     
+    \"value\": 1\r\n    }\r\n  }\r\n]"
+  _rsLastCachedKeyList: "[\r\n  {\r\n    \"metadata\": {\r\n      \"entityId\": \"dfe3fb9b-3412-466a-a0c8-267453ab1539\"\r\n   
+    },\r\n    \"rs\": {\r\n      \"key\": \"enemyDamage\",\r\n      \"type\": \"int\",\r\n     
+    \"value\": 5\r\n    }\r\n  },\r\n  {\r\n    \"metadata\": {\r\n      \"entityId\":
+    \"4b815e26-8512-4eb0-8422-aae9ad3296ab\"\r\n    },\r\n    \"rs\": {\r\n     
+    \"key\": \"isDoubleXP\",\r\n      \"type\": \"bool\",\r\n      \"value\": false\r\n   
+    }\r\n  },\r\n  {\r\n    \"metadata\": {\r\n      \"entityId\": \"eccd0a40-6dbe-4277-b3ae-4738bb61fd44\"\r\n   
+    },\r\n    \"rs\": {\r\n      \"key\": \"backgroundMusicVolume\",\r\n      \"type\":
+    \"float\",\r\n      \"value\": 1.0\r\n    }\r\n  },\r\n  {\r\n    \"metadata\":
+    {\r\n      \"entityId\": \"ffa0bdab-9a9e-481d-b717-95b4a3491a95\"\r\n    },\r\n   
+    \"rs\": {\r\n      \"key\": \"victoryMessage\",\r\n      \"type\": \"string\",\r\n     
+    \"value\": \"\xA1Victoria!\"\r\n    }\r\n  },\r\n  {\r\n    \"metadata\": {\r\n     
+    \"entityId\": \"c0eda633-0636-4203-9a45-45f0489bafd5\"\r\n    },\r\n    \"rs\":
+    {\r\n      \"key\": \"maxPlayerHealth\",\r\n      \"type\": \"int\",\r\n     
+    \"value\": 150\r\n    }\r\n  },\r\n  {\r\n    \"metadata\": {\r\n      \"entityId\":
+    \"057b715c-5113-425f-8557-bf84dc0fd939\"\r\n    },\r\n    \"rs\": {\r\n     
+    \"key\": \"goldPerWin\",\r\n      \"type\": \"int\",\r\n      \"value\": 50\r\n   
+    }\r\n  },\r\n  {\r\n    \"metadata\": {\r\n      \"entityId\": \"c9054298-4a95-41f6-8bc4-e26f2d1314d1\"\r\n   
+    },\r\n    \"rs\": {\r\n      \"key\": \"gemsPerWin\",\r\n      \"type\": \"int\",\r\n     
+    \"value\": 1\r\n    }\r\n  }\r\n]"
+  _environments: "[\r\n  {\r\n    \"projectId\": \"68250554-a173-4efc-a96c-fb6aae538cdb\",\r\n   
+    \"name\": \"production\",\r\n    \"id\": \"780fb6d8-8550-4a8d-84f8-c4e0d9899d9e\",\r\n   
+    \"isDefault\": true,\r\n    \"createdAt\": \"2025-09-25T22:25:58Z\",\r\n    \"updatedAt\":
+    \"2025-09-25T22:25:58Z\"\r\n  }\r\n]"

@@ -11,10 +11,11 @@ public class Character
     public bool IsStunned { get; set; } = false;
     public List<StatusEffect> ActiveEffects { get; private set; }
 
-    // Eventos para conectar con la parte visual
+    // Eventos
     public event System.Action OnDamagedEvent;
     public event System.Action OnHealedEvent;
-    public event System.Action OnStatusChanged;   // nuevo evento para cambios de estado
+    public event System.Action OnStatusChanged;
+    public event System.Action OnStatsChanged;   
 
     public Character(string name, int health)
     {
@@ -44,8 +45,8 @@ public class Character
 
         Debug.Log($"{Name} recibe {amount} de daño. Vida restante: {Health}");
 
-        // Avisar que recibió daño
         OnDamagedEvent?.Invoke();
+        OnStatsChanged?.Invoke();
     }
 
     public void Heal(int amount)
@@ -55,7 +56,22 @@ public class Character
 
         Debug.Log($"{Name} se cura {amount} de vida. Ahora tiene {Health}.");
 
-        // Avisar que se curó
+        OnHealedEvent?.Invoke();
+        OnStatsChanged?.Invoke();
+    }
+
+    // método para ajustar vida máxima desde RemoteConfig
+    public void SetMaxHealth(int newMaxHealth, bool healToFull = true)
+    {
+        MaxHealth = newMaxHealth;
+        if (healToFull)
+            Health = MaxHealth;
+        else
+            Health = Mathf.Min(Health, MaxHealth);
+
+        Debug.Log($"{Name}: MaxHealth -> {MaxHealth}, Health -> {Health}");
+
+        OnStatsChanged?.Invoke();
         OnHealedEvent?.Invoke();
     }
 
@@ -63,8 +79,6 @@ public class Character
     {
         ActiveEffects.Add(effect);
         Debug.Log($"{Name} gana estado: {effect.Name} por {effect.Duration} turnos.");
-
-        // Avisar que cambió su lista de estados
         OnStatusChanged?.Invoke();
     }
 
@@ -83,7 +97,6 @@ public class Character
                 Debug.Log($"{Name} ya no tiene el estado {ActiveEffects[i].Name}.");
                 ActiveEffects.RemoveAt(i);
 
-                // Avisar que se quitó un estado
                 OnStatusChanged?.Invoke();
             }
         }

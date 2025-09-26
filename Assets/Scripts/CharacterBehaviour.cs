@@ -93,4 +93,16 @@ public class CharacterBehaviour : MonoBehaviour
         // Si no hay estados activos relevantes
         meshRenderer.material.color = targetColor;
     }
+    
+    public void InitializeCharacter(int newMaxHealth)
+    {
+        maxHealth = newMaxHealth;
+        Data = new Character(characterName, maxHealth);
+
+        // (re-suscribirse a eventos)
+        Data.OnDamagedEvent += OnDamaged;
+        Data.OnHealedEvent += OnHealed;
+        Data.OnStatusChanged += CheckStatusColor;
+        // actualizar UI, etc.
+    }
 }

@@ -15,6 +15,10 @@ public class TurnBasedCombat : MonoBehaviour
     [Header("Config")]
     public float turnDelay = 2f; // Tiempo entre turnos
 
+    [Header("Remote Config Overrides")]
+    public string overrideVictoryMessage = null;
+    public int enemyBaseDamage = 15;
+
     [Header("UI Vida")]
     public Slider heroHealthBar;
     public Slider enemyHealthBar;
@@ -221,7 +225,8 @@ public class TurnBasedCombat : MonoBehaviour
         }
         else if (decision < 0.4f)
         {
-            turnManager.AddCommand(new AttackCommand(enemy, hero, 15));
+            // 👇 ahora usa enemyBaseDamage en lugar de valor fijo
+            turnManager.AddCommand(new AttackCommand(enemy, hero, enemyBaseDamage));
             ShowStatus(enemy, $"ataca a {hero.Name}");
             PlaySFX(attackSFX);
             PlaySFX(heroHitSFX);
@@ -278,17 +283,33 @@ public class TurnBasedCombat : MonoBehaviour
 
     void EndBattle(string message)
     {
+        // 👇 aplicar override del mensaje de victoria
+        if (message.Contains("Victoria") && !string.IsNullOrEmpty(overrideVictoryMessage))
+        {
+            message = overrideVictoryMessage;
+        }
+
+        if (message.Contains("Victoria"))
+        {
+            // Recompensas al ganar
+            if (ResourceManager.Instance != null)
+            {
+                ResourceManager.Instance.AddGold(ResourceManager.Instance.goldPerWin);
+                ResourceManager.Instance.AddGems(ResourceManager.Instance.gemsPerWin);
+            }
+        }
+
         statusText.text = message;
         DisableButtons();
 
         endMessageText.text = message;
         endScreen.SetActive(true);
 
-        // Detener música de fondo
+        // ⏹ Detener música de fondo
         if (backgroundMusic != null && backgroundMusic.isPlaying)
             backgroundMusic.Stop();
 
-        // Música de victoria o derrota
+        // 🎵 Música de victoria o derrota
         if (sfxSource != null)
         {
             if (message.Contains("Victoria") && victoryMusic != null)
@@ -344,5 +365,25 @@ public class TurnBasedCombat : MonoBehaviour
         {
             sfxSource.PlayOneShot(clip);
         }
+    }
+    
+    public void ApplyRemoteConfigOverrides()
+    {
+        // Asegurar que usamos la instancia actual de CharacterBehaviour
+        if (heroObject != null)
+            hero = heroObject.Data;
+        if (enemyObject != null)
+            enemy = enemyObject.Data;
+
+        // Refrescar sliders
+        if (heroHealthBar != null && hero != null)
+            heroHealthBar.maxValue = hero.MaxHealth;
+        if (enemyHealthBar != null && enemy != null)
+            enemyHealthBar.maxValue = enemy.MaxHealth;
+
+        // Refrescar valores
+        UpdateHealthBars();
+
+        Debug.Log($"[TurnBasedCombat] RemoteConfig aplicado: Hero MaxHP={hero?.MaxHealth}, Enemy MaxHP={enemy?.MaxHealth}");
     }
 }
