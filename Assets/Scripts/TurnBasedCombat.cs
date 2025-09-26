@@ -26,6 +26,10 @@ public class TurnBasedCombat : MonoBehaviour
     [Header("UI Vida - Texto")]
     public TextMeshProUGUI heroHealthText;
     public TextMeshProUGUI enemyHealthText;
+    
+    [Header("UI - Recompensas")]
+    public TextMeshProUGUI goldRewardText;
+    public TextMeshProUGUI gemsRewardText;
 
     [Header("UI Vida - Colores")]
     public Image heroFill;
@@ -138,7 +142,7 @@ public class TurnBasedCombat : MonoBehaviour
 
         if (hero.IsStunned)
         {
-            ShowStatus(hero, "está aturdido y pierde el turno");
+            ShowStatus(hero, "no puede realizar ninguna acción porque está aturdido");
             PlaySFX(stunSFX);
             hero.IsStunned = false;
             heroTurn = false;
@@ -225,7 +229,7 @@ public class TurnBasedCombat : MonoBehaviour
         }
         else if (decision < 0.4f)
         {
-            // 👇 ahora usa enemyBaseDamage en lugar de valor fijo
+            // ahora usa enemyBaseDamage en lugar de valor fijo
             turnManager.AddCommand(new AttackCommand(enemy, hero, enemyBaseDamage));
             ShowStatus(enemy, $"ataca a {hero.Name}");
             PlaySFX(attackSFX);
@@ -240,7 +244,7 @@ public class TurnBasedCombat : MonoBehaviour
         }
         else
         {
-            hero.ApplyStatus(new StunEffect(1));
+            hero.ApplyStatus(new StunEffect(3));
             ShowStatus(enemy, $"aturde a {hero.Name}");
             PlaySFX(stunSFX);
             PlaySFX(heroHitSFX);
@@ -283,21 +287,21 @@ public class TurnBasedCombat : MonoBehaviour
 
     void EndBattle(string message)
     {
-        // 👇 aplicar override del mensaje de victoria
-        if (message.Contains("Victoria") && !string.IsNullOrEmpty(overrideVictoryMessage))
-        {
-            message = overrideVictoryMessage;
-        }
+        int goldEarned = 0;
+        int gemsEarned = 0;
 
         if (message.Contains("Victoria"))
         {
-            // Recompensas al ganar
             if (ResourceManager.Instance != null)
             {
-                ResourceManager.Instance.AddGold(ResourceManager.Instance.goldPerWin);
-                ResourceManager.Instance.AddGems(ResourceManager.Instance.gemsPerWin);
+                goldEarned = ResourceManager.Instance.goldPerWin;
+                gemsEarned = ResourceManager.Instance.gemsPerWin;
+
+                ResourceManager.Instance.AddGold(goldEarned);
+                ResourceManager.Instance.AddGems(gemsEarned);
             }
         }
+
 
         statusText.text = message;
         DisableButtons();
@@ -305,11 +309,18 @@ public class TurnBasedCombat : MonoBehaviour
         endMessageText.text = message;
         endScreen.SetActive(true);
 
-        // ⏹ Detener música de fondo
+        // Mostrar recompensas en UI final
+        if (goldRewardText != null)
+            goldRewardText.text = goldEarned > 0 ? $"+{goldEarned} Oro" : "";
+
+        if (gemsRewardText != null)
+            gemsRewardText.text = gemsEarned > 0 ? $"+{gemsEarned} Gemas" : "";
+
+        // Cortar música de fondo
         if (backgroundMusic != null && backgroundMusic.isPlaying)
             backgroundMusic.Stop();
 
-        // 🎵 Música de victoria o derrota
+        // Reproducir música final
         if (sfxSource != null)
         {
             if (message.Contains("Victoria") && victoryMusic != null)
@@ -324,6 +335,8 @@ public class TurnBasedCombat : MonoBehaviour
             }
         }
     }
+
+
 
     void DisableButtons()
     {
