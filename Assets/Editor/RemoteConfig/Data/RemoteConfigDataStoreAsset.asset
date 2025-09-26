@@ -12,42 +12,42 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 469c24fdb3bd6431b92cc1465bd9166b, type: 3}
   m_Name: RemoteConfigDataStoreAsset
   m_EditorClassIdentifier: 
-  _rsKeyList: "[\r\n  {\r\n    \"metadata\": {\r\n      \"entityId\": \"930fb6ce-a7a0-4618-9053-4fac3ff03d8e\"\r\n   
+  _rsKeyList: "[\r\n  {\r\n    \"metadata\": {\r\n      \"entityId\": \"a163d9d3-38d5-4d3b-be08-48c915b94dec\"\r\n   
     },\r\n    \"rs\": {\r\n      \"key\": \"enemyDamage\",\r\n      \"type\": \"int\",\r\n     
     \"value\": 15\r\n    }\r\n  },\r\n  {\r\n    \"metadata\": {\r\n      \"entityId\":
-    \"609b5527-0a37-4b0d-b99f-5de3fa32cd6f\"\r\n    },\r\n    \"rs\": {\r\n     
+    \"c75bbfc0-3c82-4e20-9565-73f118bd7ff8\"\r\n    },\r\n    \"rs\": {\r\n     
     \"key\": \"isDoubleXP\",\r\n      \"type\": \"bool\",\r\n      \"value\": false\r\n   
-    }\r\n  },\r\n  {\r\n    \"metadata\": {\r\n      \"entityId\": \"6338cf9f-f0d5-4bec-892f-decd5dec6095\"\r\n   
+    }\r\n  },\r\n  {\r\n    \"metadata\": {\r\n      \"entityId\": \"14ba01bc-afd8-4e64-8717-533a8f843fba\"\r\n   
     },\r\n    \"rs\": {\r\n      \"key\": \"backgroundMusicVolume\",\r\n      \"type\":
     \"float\",\r\n      \"value\": 1.0\r\n    }\r\n  },\r\n  {\r\n    \"metadata\":
-    {\r\n      \"entityId\": \"37d44b21-270f-40a4-8d56-64cc1f67bc30\"\r\n    },\r\n   
+    {\r\n      \"entityId\": \"22e31391-539e-46cd-b905-b3fb3b242d04\"\r\n    },\r\n   
     \"rs\": {\r\n      \"key\": \"victoryMessage\",\r\n      \"type\": \"string\",\r\n     
-    \"value\": \"!Has ganado!\"\r\n    }\r\n  },\r\n  {\r\n    \"metadata\": {\r\n     
-    \"entityId\": \"e649d8b5-facf-4367-90e1-fb72ad17599d\"\r\n    },\r\n    \"rs\":
-    {\r\n      \"key\": \"maxPlayerHealth\",\r\n      \"type\": \"int\",\r\n     
+    \"value\": \"!Has ganado el combate!\"\r\n    }\r\n  },\r\n  {\r\n    \"metadata\":
+    {\r\n      \"entityId\": \"1fef4447-86b2-4027-9a2e-5387b63ddb6a\"\r\n    },\r\n   
+    \"rs\": {\r\n      \"key\": \"maxPlayerHealth\",\r\n      \"type\": \"int\",\r\n     
     \"value\": 100\r\n    }\r\n  },\r\n  {\r\n    \"metadata\": {\r\n      \"entityId\":
-    \"c7c2b7c5-a582-4347-92fa-a5db355ebc08\"\r\n    },\r\n    \"rs\": {\r\n     
+    \"e87e6073-4351-4b32-8a94-d6c8491b4672\"\r\n    },\r\n    \"rs\": {\r\n     
     \"key\": \"goldPerWin\",\r\n      \"type\": \"int\",\r\n      \"value\": 50\r\n   
-    }\r\n  },\r\n  {\r\n    \"metadata\": {\r\n      \"entityId\": \"fc9ad2d4-e9c0-4f1e-aa69-2343862d918d\"\r\n   
+    }\r\n  },\r\n  {\r\n    \"metadata\": {\r\n      \"entityId\": \"178111e1-7d90-40a2-8b67-9d7e24dbe201\"\r\n   
     },\r\n    \"rs\": {\r\n      \"key\": \"gemsPerWin\",\r\n      \"type\": \"int\",\r\n     
     \"value\": 1\r\n    }\r\n  }\r\n]"
-  _rsLastCachedKeyList: "[\r\n  {\r\n    \"metadata\": {\r\n      \"entityId\": \"930fb6ce-a7a0-4618-9053-4fac3ff03d8e\"\r\n   
+  _rsLastCachedKeyList: "[\r\n  {\r\n    \"metadata\": {\r\n      \"entityId\": \"a163d9d3-38d5-4d3b-be08-48c915b94dec\"\r\n   
     },\r\n    \"rs\": {\r\n      \"key\": \"enemyDamage\",\r\n      \"type\": \"int\",\r\n     
     \"value\": 15\r\n    }\r\n  },\r\n  {\r\n    \"metadata\": {\r\n      \"entityId\":
-    \"609b5527-0a37-4b0d-b99f-5de3fa32cd6f\"\r\n    },\r\n    \"rs\": {\r\n     
+    \"c75bbfc0-3c82-4e20-9565-73f118bd7ff8\"\r\n    },\r\n    \"rs\": {\r\n     
     \"key\": \"isDoubleXP\",\r\n      \"type\": \"bool\",\r\n      \"value\": false\r\n   
-    }\r\n  },\r\n  {\r\n    \"metadata\": {\r\n      \"entityId\": \"6338cf9f-f0d5-4bec-892f-decd5dec6095\"\r\n   
+    }\r\n  },\r\n  {\r\n    \"metadata\": {\r\n      \"entityId\": \"14ba01bc-afd8-4e64-8717-533a8f843fba\"\r\n   
     },\r\n    \"rs\": {\r\n      \"key\": \"backgroundMusicVolume\",\r\n      \"type\":
     \"float\",\r\n      \"value\": 1.0\r\n    }\r\n  },\r\n  {\r\n    \"metadata\":
-    {\r\n      \"entityId\": \"37d44b21-270f-40a4-8d56-64cc1f67bc30\"\r\n    },\r\n   
+    {\r\n      \"entityId\": \"22e31391-539e-46cd-b905-b3fb3b242d04\"\r\n    },\r\n   
     \"rs\": {\r\n      \"key\": \"victoryMessage\",\r\n      \"type\": \"string\",\r\n     
-    \"value\": \"!Has ganado!\"\r\n    }\r\n  },\r\n  {\r\n    \"metadata\": {\r\n     
-    \"entityId\": \"e649d8b5-facf-4367-90e1-fb72ad17599d\"\r\n    },\r\n    \"rs\":
-    {\r\n      \"key\": \"maxPlayerHealth\",\r\n      \"type\": \"int\",\r\n     
+    \"value\": \"!Has ganado el combate!\"\r\n    }\r\n  },\r\n  {\r\n    \"metadata\":
+    {\r\n      \"entityId\": \"1fef4447-86b2-4027-9a2e-5387b63ddb6a\"\r\n    },\r\n   
+    \"rs\": {\r\n      \"key\": \"maxPlayerHealth\",\r\n      \"type\": \"int\",\r\n     
     \"value\": 100\r\n    }\r\n  },\r\n  {\r\n    \"metadata\": {\r\n      \"entityId\":
-    \"c7c2b7c5-a582-4347-92fa-a5db355ebc08\"\r\n    },\r\n    \"rs\": {\r\n     
+    \"e87e6073-4351-4b32-8a94-d6c8491b4672\"\r\n    },\r\n    \"rs\": {\r\n     
     \"key\": \"goldPerWin\",\r\n      \"type\": \"int\",\r\n      \"value\": 50\r\n   
-    }\r\n  },\r\n  {\r\n    \"metadata\": {\r\n      \"entityId\": \"fc9ad2d4-e9c0-4f1e-aa69-2343862d918d\"\r\n   
+    }\r\n  },\r\n  {\r\n    \"metadata\": {\r\n      \"entityId\": \"178111e1-7d90-40a2-8b67-9d7e24dbe201\"\r\n   
     },\r\n    \"rs\": {\r\n      \"key\": \"gemsPerWin\",\r\n      \"type\": \"int\",\r\n     
     \"value\": 1\r\n    }\r\n  }\r\n]"
   _environments: "[\r\n  {\r\n    \"projectId\": \"68250554-a173-4efc-a96c-fb6aae538cdb\",\r\n   

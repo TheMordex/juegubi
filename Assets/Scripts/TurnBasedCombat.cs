@@ -26,10 +26,6 @@ public class TurnBasedCombat : MonoBehaviour
     [Header("UI Vida - Texto")]
     public TextMeshProUGUI heroHealthText;
     public TextMeshProUGUI enemyHealthText;
-    
-    [Header("UI - Recompensas")]
-    public TextMeshProUGUI goldRewardText;
-    public TextMeshProUGUI gemsRewardText;
 
     [Header("UI Vida - Colores")]
     public Image heroFill;
@@ -287,21 +283,21 @@ public class TurnBasedCombat : MonoBehaviour
 
     void EndBattle(string message)
     {
-        int goldEarned = 0;
-        int gemsEarned = 0;
+        // aplicar override del mensaje de victoria
+        if (message.Contains("Victoria") && !string.IsNullOrEmpty(overrideVictoryMessage))
+        {
+            message = overrideVictoryMessage;
+        }
 
         if (message.Contains("Victoria"))
         {
+            // Recompensas al ganar
             if (ResourceManager.Instance != null)
             {
-                goldEarned = ResourceManager.Instance.goldPerWin;
-                gemsEarned = ResourceManager.Instance.gemsPerWin;
-
-                ResourceManager.Instance.AddGold(goldEarned);
-                ResourceManager.Instance.AddGems(gemsEarned);
+                ResourceManager.Instance.AddGold(ResourceManager.Instance.goldPerWin);
+                ResourceManager.Instance.AddGems(ResourceManager.Instance.gemsPerWin);
             }
         }
-
 
         statusText.text = message;
         DisableButtons();
@@ -309,18 +305,11 @@ public class TurnBasedCombat : MonoBehaviour
         endMessageText.text = message;
         endScreen.SetActive(true);
 
-        // Mostrar recompensas en UI final
-        if (goldRewardText != null)
-            goldRewardText.text = goldEarned > 0 ? $"+{goldEarned} Oro" : "";
-
-        if (gemsRewardText != null)
-            gemsRewardText.text = gemsEarned > 0 ? $"+{gemsEarned} Gemas" : "";
-
-        // Cortar música de fondo
+        // Detener música de fondo
         if (backgroundMusic != null && backgroundMusic.isPlaying)
             backgroundMusic.Stop();
 
-        // Reproducir música final
+        // Música de victoria o derrota
         if (sfxSource != null)
         {
             if (message.Contains("Victoria") && victoryMusic != null)
@@ -335,8 +324,6 @@ public class TurnBasedCombat : MonoBehaviour
             }
         }
     }
-
-
 
     void DisableButtons()
     {
