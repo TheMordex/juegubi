@@ -1,10 +1,16 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class TurnManager
 {
     private Queue<ICommand> commandQueue = new Queue<ICommand>();
+
+    private bool isHeroTurn = true; 
+
+    public bool IsHeroTurn()
+    {
+        return isHeroTurn;
+    }
 
     public void AddCommand(ICommand command)
     {
@@ -18,5 +24,10 @@ public class TurnManager
             ICommand command = commandQueue.Dequeue();
             command.Execute();
         }
+    }
+
+    public void NextTurn()
+    {
+        isHeroTurn = !isHeroTurn;
     }
 }

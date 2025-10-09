@@ -6,191 +6,115 @@ using UnityEngine.SceneManagement;
 
 public class TurnBasedCombat : MonoBehaviour
 {
-    private Character hero;
-    private Character enemy;
+    private CharacterController heroController;
+    private CharacterController enemyController;
+
     private TurnManager turnManager;
 
-    private bool heroTurn = true;
+    [Header("Configuración")]
+    public float turnDelay = 2f;
 
-    [Header("Config")]
-    public float turnDelay = 2f; // Tiempo entre turnos
-
-    [Header("Remote Config Overrides")]
-    public string overrideVictoryMessage = null;
-    public int enemyBaseDamage = 15;
-
-    [Header("UI Vida")]
+    [Header("UI")]
     public Slider heroHealthBar;
     public Slider enemyHealthBar;
-
-    [Header("UI Vida - Texto")]
     public TextMeshProUGUI heroHealthText;
     public TextMeshProUGUI enemyHealthText;
+    public TextMeshProUGUI statusText;
+    public GameObject endScreen;
+    public TextMeshProUGUI endMessageText;
 
-    [Header("UI Vida - Colores")]
-    public Image heroFill;
-    public Image enemyFill;
-    public Color highHealthColor = Color.green;
-    public Color midHealthColor = Color.yellow;
-    public Color lowHealthColor = Color.red;
-
-    [Header("UI - Botones de acción")]
+    [Header("Botones")]
     public Button attackButton;
     public Button defendButton;
     public Button healButton;
-    public Button fortifyButton;
-    public Button stunButton;
-
-    [Header("UI - Estado")]
-    public TextMeshProUGUI statusText;
-
-    [Header("UI - Pantalla final")]
-    public GameObject endScreen;
-    public TextMeshProUGUI endMessageText;
+    //public Button fortifyButton;
+    //public Button stunButton;
     public Button restartButton;
     public Button quitButton;
-    public CharacterBehaviour heroObject;
-    public CharacterBehaviour enemyObject;
 
-    [Header("Audio - Música")]
-    public AudioSource backgroundMusic;   // música de fondo
-    public AudioClip victoryMusic;        // clip de victoria
-    public AudioClip defeatMusic;         // clip de derrota
-    public AudioSource sfxSource;         // fuente para efectos de sonido
-
-    [Header("Audio - Efectos")]
+    [Header("Audio")]
+    public AudioSource backgroundMusic;
+    public AudioClip victoryMusic;
+    public AudioClip defeatMusic;
+    public AudioSource sfxSource;
     public AudioClip attackSFX;
-    public AudioClip defendSFX;
     public AudioClip healSFX;
-    public AudioClip fortifySFX;
-    public AudioClip stunSFX;
-    public AudioClip poisonSFX;
-    public AudioClip heroHitSFX;
-    public AudioClip enemyHitSFX;
+
+    [Header("Referencias visuales")]
+    public CharacterView heroView;
+    public CharacterView enemyView;
 
     void Start()
     {
-        hero = heroObject.Data;
-        enemy = enemyObject.Data;
-
         turnManager = new TurnManager();
 
-        // Config sliders
-        heroHealthBar.maxValue = hero.MaxHealth;
-        enemyHealthBar.maxValue = enemy.MaxHealth;
+        // Inicializamos MVC de héroe y enemigo
+        CharacterModel heroModel = new CharacterModel("Héroe", 100, 20);
+        CharacterModel enemyModel = new CharacterModel("Enemigo", 80, 15);
 
-        heroHealthBar.value = hero.Health;
-        enemyHealthBar.value = enemy.Health;
-        UpdateHealthBars();
+        heroController = new CharacterController(heroModel, heroView);
+        enemyController = new CharacterController(enemyModel, enemyView);
 
-        // Mensaje inicial
-        ShowStatus(hero, "comienza la batalla. Elige una acción.");
+        // Inicializamos UI y botones
+        heroView.Setup(heroHealthBar, heroHealthText);
+        enemyView.Setup(enemyHealthBar, enemyHealthText);
+        heroController.UpdateView();
+        enemyController.UpdateView();
 
-        // Listeners botones héroe
-        attackButton.onClick.AddListener(() => OnHeroAction("attack"));
-        defendButton.onClick.AddListener(() => OnHeroAction("defend"));
-        healButton.onClick.AddListener(() => OnHeroAction("heal"));
-        if (fortifyButton != null)
-            fortifyButton.onClick.AddListener(() => OnHeroAction("fortify"));
-        if (stunButton != null)
-            stunButton.onClick.AddListener(() => OnHeroAction("stun"));
+        attackButton.onClick.AddListener(() => OnHeroAction(ActionType.Attack));
+        healButton.onClick.AddListener(() => OnHeroAction(ActionType.Heal));
+        defendButton.onClick.AddListener(() => OnHeroAction(ActionType.Defend));
+        //fortifyButton.onClick.AddListener(() => OnHeroAction(ActionType.Fortify));
+        //stunButton.onClick.AddListener(() => OnHeroAction(ActionType.Stun));
 
-        // Botones pantalla final
         restartButton.onClick.AddListener(RestartBattle);
         quitButton.onClick.AddListener(QuitGame);
 
         endScreen.SetActive(false);
+        statusText.text = "Comienza la batalla. ¡Elige una acción!";
 
-        // Reproducir música de fondo
         if (backgroundMusic != null)
             backgroundMusic.Play();
     }
 
-    void UpdateHealthBars()
+    void OnHeroAction(ActionType action)
     {
-        heroHealthBar.value = hero.Health;
-        enemyHealthBar.value = enemy.Health;
-
-        heroHealthText.text = $"{hero.Health} / {hero.MaxHealth}";
-        enemyHealthText.text = $"{enemy.Health} / {enemy.MaxHealth}";
-
-        UpdateHealthColor(heroFill, hero.Health, hero.MaxHealth);
-        UpdateHealthColor(enemyFill, enemy.Health, enemy.MaxHealth);
-    }
-
-    void UpdateHealthColor(Image fill, int current, int max)
-    {
-        float ratio = (float)current / max;
-
-        if (ratio > 0.6f)
-            fill.color = highHealthColor;
-        else if (ratio > 0.3f)
-            fill.color = midHealthColor;
-        else
-            fill.color = lowHealthColor;
-    }
-
-    void OnHeroAction(string action)
-    {
-        if (!heroTurn) return;
-
-        DisableButtons(); // Bloquear acciones
-
-        if (hero.IsStunned)
-        {
-            ShowStatus(hero, "no puede realizar ninguna acción porque está aturdido");
-            PlaySFX(stunSFX);
-            hero.IsStunned = false;
-            heroTurn = false;
-
-            hero.UpdateEffects();
-            enemy.UpdateEffects();
-
-            if (enemy.Health > 0)
-                StartCoroutine(EnemyTurnCoroutine());
+        if (!turnManager.IsHeroTurn())
             return;
-        }
+
+        DisableButtons();
 
         switch (action)
         {
-            case "attack":
-                turnManager.AddCommand(new AttackCommand(hero, enemy, 20));
-                ShowStatus(hero, $"ataca a {enemy.Name}");
-                PlaySFX(attackSFX);
-                PlaySFX(enemyHitSFX);
+            case ActionType.Attack:
+                sfxSource.PlayOneShot(attackSFX);
+                heroController.Attack(enemyController);
                 break;
-            case "defend":
-                turnManager.AddCommand(new DefendCommand(hero));
-                ShowStatus(hero, "se defiende");
-                PlaySFX(defendSFX);
+
+            case ActionType.Heal:
+                sfxSource.PlayOneShot(healSFX);
+                heroController.Heal(15);
                 break;
-            case "heal":
-                turnManager.AddCommand(new HealCommand(hero, 15));
-                ShowStatus(hero, "se cura");
-                PlaySFX(healSFX);
+
+            case ActionType.Defend:
+                statusText.text = "El héroe se defiende.";
                 break;
-            case "fortify":
-                hero.ApplyStatus(new FortifyEffect(2, 5));
-                ShowStatus(hero, "se fortifica");
-                PlaySFX(fortifySFX);
+
+            case ActionType.Fortify:
+                statusText.text = "El héroe se fortalece.";
                 break;
-            case "stun":
-                enemy.ApplyStatus(new StunEffect(1));
-                ShowStatus(hero, $"aturde a {enemy.Name}");
-                PlaySFX(stunSFX);
-                PlaySFX(enemyHitSFX);
+
+            case ActionType.Stun:
+                statusText.text = "El héroe intenta aturdir al enemigo.";
                 break;
         }
 
-        turnManager.ExecuteTurn();
-        hero.UpdateEffects();
-        enemy.UpdateEffects();
-
         CheckBattleState();
-        UpdateHealthBars();
-
-        if (enemy.Health > 0)
+        if (!enemyController.IsDead())
+        {
+            turnManager.NextTurn();
             StartCoroutine(EnemyTurnCoroutine());
+        }
     }
 
     private IEnumerator EnemyTurnCoroutine()
@@ -201,127 +125,62 @@ public class TurnBasedCombat : MonoBehaviour
 
     void EnemyTurn()
     {
-        if (enemy.IsStunned)
-        {
-            ShowStatus(enemy, "está aturdido y pierde el turno");
-            PlaySFX(stunSFX);
-            enemy.IsStunned = false;
-            hero.UpdateEffects();
-            enemy.UpdateEffects();
-            StartCoroutine(HeroTurnCoroutine());
+        if (enemyController.IsDead())
             return;
-        }
 
-        heroTurn = false;
-        ShowStatus(enemy, "toma su turno...");
+        statusText.text = "El enemigo ataca!";
+        sfxSource.PlayOneShot(attackSFX);
 
-        float decision = Random.value;
-
-        if (enemy.Health <= 20 && decision < 0.2f)
-        {
-            turnManager.AddCommand(new HealCommand(enemy, 10));
-            ShowStatus(enemy, "se cura");
-            PlaySFX(healSFX);
-        }
-        else if (decision < 0.4f)
-        {
-            // ahora usa enemyBaseDamage en lugar de valor fijo
-            turnManager.AddCommand(new AttackCommand(enemy, hero, enemyBaseDamage));
-            ShowStatus(enemy, $"ataca a {hero.Name}");
-            PlaySFX(attackSFX);
-            PlaySFX(heroHitSFX);
-        }
-        else if (decision < 0.7f)
-        {
-            hero.ApplyStatus(new PoisonEffect(3, 5));
-            ShowStatus(enemy, $"envenena a {hero.Name}");
-            PlaySFX(poisonSFX);
-            PlaySFX(heroHitSFX);
-        }
-        else
-        {
-            hero.ApplyStatus(new StunEffect(3));
-            ShowStatus(enemy, $"aturde a {hero.Name}");
-            PlaySFX(stunSFX);
-            PlaySFX(heroHitSFX);
-        }
-
-        turnManager.ExecuteTurn();
-        hero.UpdateEffects();
-        enemy.UpdateEffects();
+        enemyController.Attack(heroController);
+        heroController.UpdateView();
 
         CheckBattleState();
-        UpdateHealthBars();
 
-        StartCoroutine(HeroTurnCoroutine());
+        if (!heroController.IsDead())
+        {
+            turnManager.NextTurn();
+            StartCoroutine(HeroTurnCoroutine());
+        }
     }
 
     private IEnumerator HeroTurnCoroutine()
     {
         yield return new WaitForSeconds(turnDelay);
-        if (hero.Health > 0)
+        if (!heroController.IsDead())
         {
-            ShowStatus(hero, "elige una acción");
-            heroTurn = true;
+            statusText.text = "Tu turno. Elige una acción.";
             EnableButtons();
         }
     }
 
     void CheckBattleState()
     {
-        if (hero.Health <= 0)
+        if (heroController.IsDead())
         {
-            EndBattle("¡Derrota!");
+            EndBattle("Derrota");
         }
-        else if (enemy.Health <= 0)
+        else if (enemyController.IsDead())
         {
-            EndBattle("¡Victoria!");
+            EndBattle("Victoria");
         }
-
-        UpdateHealthBars();
     }
 
-    void EndBattle(string message)
+    void EndBattle(string result)
     {
-        // aplicar override del mensaje de victoria
-        if (message.Contains("Victoria") && !string.IsNullOrEmpty(overrideVictoryMessage))
-        {
-            message = overrideVictoryMessage;
-        }
-
-        if (message.Contains("Victoria"))
-        {
-            // Recompensas al ganar
-            if (ResourceManager.Instance != null)
-            {
-                ResourceManager.Instance.AddGold(ResourceManager.Instance.goldPerWin);
-                ResourceManager.Instance.AddGems(ResourceManager.Instance.gemsPerWin);
-            }
-        }
-
-        statusText.text = message;
+        statusText.text = $"Fin del combate: {result}";
+        endMessageText.text = result;
+        endScreen.SetActive(true);
         DisableButtons();
 
-        endMessageText.text = message;
-        endScreen.SetActive(true);
-
-        // Detener música de fondo
         if (backgroundMusic != null && backgroundMusic.isPlaying)
             backgroundMusic.Stop();
 
-        // Música de victoria o derrota
         if (sfxSource != null)
         {
-            if (message.Contains("Victoria") && victoryMusic != null)
-            {
-                sfxSource.clip = victoryMusic;
-                sfxSource.Play();
-            }
-            else if (message.Contains("Derrota") && defeatMusic != null)
-            {
-                sfxSource.clip = defeatMusic;
-                sfxSource.Play();
-            }
+            if (result == "Victoria" && victoryMusic != null)
+                sfxSource.PlayOneShot(victoryMusic);
+            else if (result == "Derrota" && defeatMusic != null)
+                sfxSource.PlayOneShot(defeatMusic);
         }
     }
 
@@ -330,8 +189,8 @@ public class TurnBasedCombat : MonoBehaviour
         attackButton.interactable = false;
         defendButton.interactable = false;
         healButton.interactable = false;
-        if (fortifyButton != null) fortifyButton.interactable = false;
-        if (stunButton != null) stunButton.interactable = false;
+        //fortifyButton.interactable = false;
+        //stunButton.interactable = false;
     }
 
     void EnableButtons()
@@ -339,51 +198,17 @@ public class TurnBasedCombat : MonoBehaviour
         attackButton.interactable = true;
         defendButton.interactable = true;
         healButton.interactable = true;
-        if (fortifyButton != null) fortifyButton.interactable = true;
-        if (stunButton != null) stunButton.interactable = true;
+        //fortifyButton.interactable = true;
+        //stunButton.interactable = true;
     }
 
     void RestartBattle()
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
-        EnableButtons();
     }
 
     void QuitGame()
     {
         SceneManager.LoadScene(1);
-    }
-
-    void ShowStatus(Character character, string message)
-    {
-        statusText.text = $"¡{character.Name} {message}!";
-    }
-
-    void PlaySFX(AudioClip clip)
-    {
-        if (sfxSource != null && clip != null)
-        {
-            sfxSource.PlayOneShot(clip);
-        }
-    }
-    
-    public void ApplyRemoteConfigOverrides()
-    {
-        // Asegurar que usamos la instancia actual de CharacterBehaviour
-        if (heroObject != null)
-            hero = heroObject.Data;
-        if (enemyObject != null)
-            enemy = enemyObject.Data;
-
-        // Refrescar sliders
-        if (heroHealthBar != null && hero != null)
-            heroHealthBar.maxValue = hero.MaxHealth;
-        if (enemyHealthBar != null && enemy != null)
-            enemyHealthBar.maxValue = enemy.MaxHealth;
-
-        // Refrescar valores
-        UpdateHealthBars();
-
-        Debug.Log($"[TurnBasedCombat] RemoteConfig aplicado: Hero MaxHP={hero?.MaxHealth}, Enemy MaxHP={enemy?.MaxHealth}");
     }
 }
