@@ -4,11 +4,11 @@ using UnityEngine;
 
 public class AttackCommand : ICommand
 {
-    private Character attacker;
-    private Character target;
+    private CharacterController attacker;
+    private CharacterController target;
     private int damage;
 
-    public AttackCommand(Character attacker, Character target, int damage)
+    public AttackCommand(CharacterController attacker, CharacterController target, int damage)
     {
         this.attacker = attacker;
         this.target = target;
@@ -17,45 +17,46 @@ public class AttackCommand : ICommand
 
     public void Execute()
     {
-        target.TakeDamage(damage);
-        Debug.Log($"{attacker.Name} ataca a {target.Name} causando {damage} de daño.");
+        attacker.Attack(target);
+        Debug.Log($"{attacker.GetName()} ataca a {target.GetName()} causando {damage} de daño.");
     }
 
     public void Undo()
     {
-        target.Heal(damage);
-        Debug.Log($"Se deshizo el ataque: {target.Name} recupera {damage} de vida.");
+        target.model.Heal(damage);
+        target.UpdateView();
+        Debug.Log($"Se deshizo el ataque: {target.GetName()} recupera {damage} de vida.");
     }
 }
 
 public class DefendCommand : ICommand
 {
-    private Character defender;
+    private CharacterController defender;
 
-    public DefendCommand(Character defender)
+    public DefendCommand(CharacterController defender)
     {
         this.defender = defender;
     }
 
     public void Execute()
     {
-        defender.IsDefending = true;
-        Debug.Log($"{defender.Name} se pone en guardia.");
+        defender.model.DefenseBonus = 20; 
+        Debug.Log($"{defender.GetName()} se pone en guardia (+20 defensa temporal).");
     }
 
     public void Undo()
     {
-        defender.IsDefending = false;
-        Debug.Log($"{defender.Name} deja de defenderse.");
+        defender.model.DefenseBonus = 0;
+        Debug.Log($"{defender.GetName()} deja de defenderse.");
     }
 }
 
 public class HealCommand : ICommand
 {
-    private Character healer;
+    private CharacterController healer;
     private int healAmount;
 
-    public HealCommand(Character healer, int healAmount)
+    public HealCommand(CharacterController healer, int healAmount)
     {
         this.healer = healer;
         this.healAmount = healAmount;
@@ -64,12 +65,13 @@ public class HealCommand : ICommand
     public void Execute()
     {
         healer.Heal(healAmount);
-        Debug.Log($"{healer.Name} se cura {healAmount} de vida.");
+        Debug.Log($"{healer.GetName()} se cura {healAmount} de vida.");
     }
 
     public void Undo()
     {
-        healer.TakeDamage(healAmount);
-        Debug.Log($"Se deshizo la curación de {healer.Name}.");
+        healer.model.TakeDamage(healAmount);
+        healer.UpdateView();
+        Debug.Log($"Se deshizo la curación de {healer.GetName()}.");
     }
 }

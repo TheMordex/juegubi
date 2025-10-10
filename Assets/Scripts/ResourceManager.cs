@@ -14,7 +14,7 @@ public class ResourceManager : MonoBehaviour
 
     void Awake()
     {
-        // Singleton → se mantiene único entre escenas
+        // Singleton  se mantiene único entre escenas
         if (Instance != null && Instance != this)
         {
             Destroy(gameObject);

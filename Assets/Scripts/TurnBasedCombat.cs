@@ -8,7 +8,6 @@ public class TurnBasedCombat : MonoBehaviour
 {
     private CharacterController heroController;
     private CharacterController enemyController;
-
     private TurnManager turnManager;
 
     [Header("Configuración")]
@@ -27,8 +26,6 @@ public class TurnBasedCombat : MonoBehaviour
     public Button attackButton;
     public Button defendButton;
     public Button healButton;
-    //public Button fortifyButton;
-    //public Button stunButton;
     public Button restartButton;
     public Button quitButton;
 
@@ -48,24 +45,21 @@ public class TurnBasedCombat : MonoBehaviour
     {
         turnManager = new TurnManager();
 
-        // Inicializamos MVC de héroe y enemigo
         CharacterModel heroModel = new CharacterModel("Héroe", 100, 20);
         CharacterModel enemyModel = new CharacterModel("Enemigo", 80, 15);
 
         heroController = new CharacterController(heroModel, heroView);
         enemyController = new CharacterController(enemyModel, enemyView);
 
-        // Inicializamos UI y botones
         heroView.Setup(heroHealthBar, heroHealthText);
         enemyView.Setup(enemyHealthBar, enemyHealthText);
+
         heroController.UpdateView();
         enemyController.UpdateView();
 
         attackButton.onClick.AddListener(() => OnHeroAction(ActionType.Attack));
         healButton.onClick.AddListener(() => OnHeroAction(ActionType.Heal));
         defendButton.onClick.AddListener(() => OnHeroAction(ActionType.Defend));
-        //fortifyButton.onClick.AddListener(() => OnHeroAction(ActionType.Fortify));
-        //stunButton.onClick.AddListener(() => OnHeroAction(ActionType.Stun));
 
         restartButton.onClick.AddListener(RestartBattle);
         quitButton.onClick.AddListener(QuitGame);
@@ -79,8 +73,21 @@ public class TurnBasedCombat : MonoBehaviour
 
     void OnHeroAction(ActionType action)
     {
+        // Actualizar efectos antes de actuar
+        heroController.UpdateStatusEffects();
+        enemyController.UpdateStatusEffects();
+
         if (!turnManager.IsHeroTurn())
             return;
+
+        if (heroController.model.IsStunned)
+        {
+            statusText.text = "Estás aturdido y pierdes el turno.";
+            heroController.model.IsStunned = false;
+            turnManager.NextTurn();
+            StartCoroutine(EnemyTurnCoroutine());
+            return;
+        }
 
         DisableButtons();
 
@@ -89,27 +96,24 @@ public class TurnBasedCombat : MonoBehaviour
             case ActionType.Attack:
                 sfxSource.PlayOneShot(attackSFX);
                 heroController.Attack(enemyController);
+
+                // ✨ Efecto visual enemigo dañado
+                enemyView.PlayShake();
+                enemyView.PlayDamageFlash();
                 break;
 
             case ActionType.Heal:
                 sfxSource.PlayOneShot(healSFX);
-                heroController.Heal(15);
+                heroController.Heal(30);
                 break;
 
             case ActionType.Defend:
                 statusText.text = "El héroe se defiende.";
                 break;
-
-            case ActionType.Fortify:
-                statusText.text = "El héroe se fortalece.";
-                break;
-
-            case ActionType.Stun:
-                statusText.text = "El héroe intenta aturdir al enemigo.";
-                break;
         }
 
         CheckBattleState();
+
         if (!enemyController.IsDead())
         {
             turnManager.NextTurn();
@@ -125,14 +129,53 @@ public class TurnBasedCombat : MonoBehaviour
 
     void EnemyTurn()
     {
+        heroController.UpdateStatusEffects();
+        enemyController.UpdateStatusEffects();
+
         if (enemyController.IsDead())
             return;
 
-        statusText.text = "El enemigo ataca!";
-        sfxSource.PlayOneShot(attackSFX);
+        if (enemyController.model.IsStunned)
+        {
+            statusText.text = "¡El enemigo está aturdido y pierde el turno!";
+            enemyController.model.IsStunned = false;
+            StartCoroutine(HeroTurnCoroutine());
+            return;
+        }
 
-        enemyController.Attack(heroController);
+        int randomChoice = Random.Range(0, 100);
+
+        if (randomChoice < 60)
+        {
+            statusText.text = "¡El enemigo ataca!";
+            sfxSource.PlayOneShot(attackSFX);
+            enemyController.Attack(heroController);
+
+            // ✨ Efecto visual héroe dañado
+            heroView.PlayShake();
+            heroView.PlayDamageFlash();
+        }
+        else if (randomChoice < 80)
+        {
+            statusText.text = "¡El enemigo te envenena!";
+            var poison = StatusEffectFactory.CreateEffect("Poised"); 
+            heroController.ApplyStatus(poison);
+        }
+        else if (randomChoice < 90)
+        {
+            statusText.text = "¡El enemigo intenta aturdirte!";
+            var stun = StatusEffectFactory.CreateEffect("Stun");
+            heroController.ApplyStatus(stun);
+        }
+        else
+        {
+            statusText.text = "¡El enemigo se fortalece!";
+            var fortify = StatusEffectFactory.CreateEffect("Fortify");
+            enemyController.ApplyStatus(fortify);
+        }
+
         heroController.UpdateView();
+        enemyController.UpdateView();
 
         CheckBattleState();
 
@@ -189,8 +232,6 @@ public class TurnBasedCombat : MonoBehaviour
         attackButton.interactable = false;
         defendButton.interactable = false;
         healButton.interactable = false;
-        //fortifyButton.interactable = false;
-        //stunButton.interactable = false;
     }
 
     void EnableButtons()
@@ -198,8 +239,6 @@ public class TurnBasedCombat : MonoBehaviour
         attackButton.interactable = true;
         defendButton.interactable = true;
         healButton.interactable = true;
-        //fortifyButton.interactable = true;
-        //stunButton.interactable = true;
     }
 
     void RestartBattle()

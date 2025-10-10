@@ -9,7 +9,7 @@ public class FortifyEffect : StatusEffect
         defenseBoost = boost;
     }
 
-    public override void ApplyEffect(Character target)
+    public override void ApplyEffect(CharacterModel target)
     {
         target.DefenseBonus = defenseBoost;
         Debug.Log($"{target.Name} aumenta su defensa en {defenseBoost} por {Duration} turnos.");

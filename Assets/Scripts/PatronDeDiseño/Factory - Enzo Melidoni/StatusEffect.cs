@@ -11,17 +11,12 @@ public abstract class StatusEffect
         Duration = duration;
     }
 
-    // Se ejecuta cada turno
-    public abstract void ApplyEffect(Character target);
+    public abstract void ApplyEffect(CharacterModel target);
 
-    // Reducir duración en 1 turno
     public void Tick()
     {
         Duration--;
     }
 
-    public bool IsExpired()
-    {
-        return Duration <= 0;
-    }
+    public bool IsExpired() => Duration <= 0;
 }

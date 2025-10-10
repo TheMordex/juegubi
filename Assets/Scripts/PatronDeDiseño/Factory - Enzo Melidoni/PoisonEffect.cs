@@ -9,7 +9,7 @@ public class PoisonEffect : StatusEffect
         damagePerTurn = damage;
     }
 
-    public override void ApplyEffect(Character target)
+    public override void ApplyEffect(CharacterModel target)
     {
         target.TakeDamage(damagePerTurn);
         Debug.Log($"{target.Name} recibe {damagePerTurn} de daño por veneno.");

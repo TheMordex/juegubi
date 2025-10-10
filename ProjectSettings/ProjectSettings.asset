@@ -159,6 +159,7 @@ PlayerSettings:
   androidMaxAspectRatio: 2.1
   applicationIdentifier:
     Android: com.TheDreamTeam.BuildMeme
+    Standalone: com.The-Dream-Team.Build---Meme
   buildNumber:
     Standalone: 0
     VisionOS: 0
