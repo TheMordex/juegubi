@@ -12,19 +12,19 @@ public static class EventManager
     public static void HealthChanged(CharacterModel character, int newHealth)
     {
         OnHealthChanged?.Invoke(character, newHealth);
-        Debug.Log($"[Event] Salud actualizada de {character.Name}: {newHealth}/{character.MaxHealth}");
+        Debug.Log($"Salud actualizada de {character.Name}: {newHealth}/{character.MaxHealth}");
     }
 
     public static void TurnStarted(CharacterModel character)
     {
         OnTurnStarted?.Invoke(character);
-        Debug.Log($"[Event] Comienza el turno de {character.Name}");
+        Debug.Log($"Comienza el turno de {character.Name}");
     }
 
     public static void TurnEnded(CharacterModel character)
     {
         OnTurnEnded?.Invoke(character);
-        Debug.Log($"[Event] Termina el turno de {character.Name}");
+        Debug.Log($"Termina el turno de {character.Name}");
     }
 
     public static void BattleEnded(string result)

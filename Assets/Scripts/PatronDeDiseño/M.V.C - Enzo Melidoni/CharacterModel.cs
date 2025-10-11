@@ -41,8 +41,7 @@ public class CharacterModel
 
         activeEffects.Add(effect);
         Debug.Log($"{Name} ha recibido el efecto: {effect.Name}");
-
-        // Algunos efectos se aplican instantáneamente
+        
         effect.ApplyEffect(this);
     }
 

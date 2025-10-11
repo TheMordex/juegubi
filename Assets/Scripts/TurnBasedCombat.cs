@@ -73,7 +73,6 @@ public class TurnBasedCombat : MonoBehaviour
 
     void OnHeroAction(ActionType action)
     {
-        // Actualizar efectos antes de actuar
         heroController.UpdateStatusEffects();
         enemyController.UpdateStatusEffects();
 
@@ -96,8 +95,7 @@ public class TurnBasedCombat : MonoBehaviour
             case ActionType.Attack:
                 sfxSource.PlayOneShot(attackSFX);
                 heroController.Attack(enemyController);
-
-                // ✨ Efecto visual enemigo dañado
+                
                 enemyView.PlayShake();
                 enemyView.PlayDamageFlash();
                 break;
@@ -150,8 +148,7 @@ public class TurnBasedCombat : MonoBehaviour
             statusText.text = "¡El enemigo ataca!";
             sfxSource.PlayOneShot(attackSFX);
             enemyController.Attack(heroController);
-
-            // ✨ Efecto visual héroe dañado
+            
             heroView.PlayShake();
             heroView.PlayDamageFlash();
         }
@@ -163,7 +160,7 @@ public class TurnBasedCombat : MonoBehaviour
         }
         else if (randomChoice < 90)
         {
-            statusText.text = "¡El enemigo intenta aturdirte!";
+            statusText.text = "¡El enemigo te ha aturdido!";
             var stun = StatusEffectFactory.CreateEffect("Stun");
             heroController.ApplyStatus(stun);
         }
@@ -248,6 +245,6 @@ public class TurnBasedCombat : MonoBehaviour
 
     void QuitGame()
     {
-        SceneManager.LoadScene(1);
+        SceneManager.LoadScene(0);
     }
 }
