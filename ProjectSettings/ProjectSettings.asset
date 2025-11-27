@@ -830,7 +830,9 @@ PlayerSettings:
   XboxOneOverrideIdentityPublisher: 
   vrEditorSettings: {}
   cloudServicesEnabled:
+    Purchasing: 0
     UNet: 1
+    Unity Ads: 1
   luminIcon:
     m_Name: 
     m_ModelFolderPath: 
@@ -850,11 +852,11 @@ PlayerSettings:
   apiCompatibilityLevel: 6
   activeInputHandler: 2
   windowsGamepadBackendHint: 0
-  cloudProjectId: 68250554-a173-4efc-a96c-fb6aae538cdb
+  cloudProjectId: 043d370a-e963-4a9b-9642-f191247bb1ef
   framebufferDepthMemorylessMode: 0
   qualitySettingsNames: []
-  projectName: Memeland
-  organizationId: enzo-francisco
+  projectName: Build & Meme
+  organizationId: unity_51f58ae132ddbd83ce3c
   cloudEnabled: 0
   legacyClampBlendShapeWeights: 0
   hmiLoadingImage: {fileID: 0}
