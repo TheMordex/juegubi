@@ -1,3 +1,4 @@
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
@@ -36,8 +37,12 @@ public class BuildingSystem : MonoBehaviour
     {
       return;
     }
-
-    if (Input.GetKeyDown(KeyCode.Space))
+    
+    if(Input.GetKeyDown(KeyCode.R))
+    {
+      objectToPlace.Rotate();
+    }
+    else if (Input.GetKeyDown(KeyCode.Space))
     {
       if (CanBePlaced(objectToPlace))
       {
