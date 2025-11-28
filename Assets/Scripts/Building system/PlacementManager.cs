@@ -6,14 +6,14 @@ using UnityEngine;
 public class PlacementManager : MonoBehaviour
 {
     public int width, height;
-    Grid placementGrid;
+    GridSystem placementGrid;
 
     private Dictionary<Vector3Int, StructureModel> temporaryRoadobjects = new Dictionary<Vector3Int, StructureModel>();
     private Dictionary<Vector3Int, StructureModel> structureDictionary = new Dictionary<Vector3Int, StructureModel>();
 
     private void Start()
     {
-        placementGrid = new Grid(width, height);
+        placementGrid = new GridSystem(width, height);
     }
 
     internal CellType[] GetNeighbourTypesFor(Vector3Int position)

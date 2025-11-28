@@ -11,7 +11,7 @@ public class GridSearch {
         public List<Point> Path { get; set; }
     }
 
-    public static List<Point> AStarSearch(Grid grid, Point startPosition, Point endPosition, bool isAgent = false)
+    public static List<Point> AStarSearch(GridSystem grid, Point startPosition, Point endPosition, bool isAgent = false)
     {
         List<Point> path = new List<Point>();
 
