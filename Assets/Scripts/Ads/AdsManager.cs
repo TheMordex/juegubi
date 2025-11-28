@@ -24,10 +24,10 @@ public class AdsManager : MonoBehaviour
 
     _rewardedAds.LoadRewardedAd();
 
-    StartCoroutine(_bannerAds());
+    StartCoroutine(BannerAds());
 
     _interstitialAds.LoadInterstitialAd();
-    StartCoroutine(_interstitialAds());
+    StartCoroutine(InterstitialAds());
   }
 
   public void ShowRewardedAd() => _rewardedAds.ShowRewardedAd();
